@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Reseller Desk</title>
+<meta name="description" content="Install Reseller Desk on your Android phone. It then sits on your home screen and in your app list.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#FFD43B">
+<style>
+  :root{--bg:#F4F4F1;--surface:#FFFFFF;--sunk:#ECECE8;--line:#DEDED8;--fg:#161616;--muted:#5F5F58;--hl:#FFD43B;--hl-ink:#161616;--ok:#1E7440;--err:#B3261E;color-scheme:light}
+  @media (prefers-color-scheme:dark){:root{--bg:#111111;--surface:#1A1A19;--sunk:#242422;--line:#2E2E2B;--fg:#EDEDE8;--muted:#A0A098;--ok:#7DD39C;--err:#F2B8B5;color-scheme:dark}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-block:max(20px,env(safe-area-inset-top,0px)) max(28px,env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  main{max-width:520px;margin:0 auto;display:grid;gap:16px}
+  h1{font-size:28px;line-height:1.15;margin:8px 0 0;text-wrap:balance}
+  h2{font-size:17px;margin:0 0 6px}
+  p{margin:0}
+  .muted{color:var(--muted);font-size:14.5px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px}
+  .logo{width:64px;height:64px;border-radius:16px}
+  label{display:grid;gap:6px;font-weight:600}
+  input{font:inherit;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-width:0;width:100%}
+  .btn{display:flex;align-items:center;justify-content:center;font:inherit;font-weight:700;min-height:48px;padding:0 16px;border-radius:12px;border:1px solid var(--fg);background:var(--hl);color:var(--hl-ink);text-decoration:none;cursor:pointer;width:100%}
+  .btn.ghost{background:transparent;color:var(--fg)}
+  .btn[disabled]{opacity:.5;cursor:default}
+  ol{margin:0;padding-left:22px;display:grid;gap:6px}
+  .ok{color:var(--ok);font-weight:600}.err{color:var(--err);font-weight:600}
+  [hidden]{display:none!important}
+  a{color:inherit}
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="icon-192.png" alt="">
+  <h1>Reseller Desk on your phone</h1>
+  <p class="muted">Install this once and Reseller Desk gets its own icon on your home screen and in your app list. Tapping it opens your own Reseller Desk in Claude.</p>
+
+  <section class="card" id="linkCard">
+    <h2>1. Your Reseller Desk link</h2>
+    <p class="muted">In Claude, open your Reseller Desk, tap <b>Share</b>, then <b>Copy link</b>. Paste it here. It's saved only on this phone.</p>
+    <label>Your link<input id="link" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://claude.ai/artifact/…"></label>
+    <button class="btn" id="save" type="button">Save my link</button>
+    <p id="linkMsg" class="muted" role="status"></p>
+    <a class="btn ghost" id="open" href="#" hidden>Open Reseller Desk</a>
+  </section>
+
+  <section class="card" id="installCard">
+    <h2>2. Install it</h2>
+    <button class="btn" id="install" type="button" hidden>Install Reseller Desk</button>
+    <p id="installNote" class="muted"></p>
+    <ol id="howto" hidden>
+      <li>Open this page in <b>Chrome</b>.</li>
+      <li>Tap the <b>⋮</b> menu at the top right.</li>
+      <li>Tap <b>Install app</b> (not "Add shortcut"), then <b>Install</b>.</li>
+      <li>Find <b>Reseller Desk</b> on your home screen and in your app list.</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>Good to know</h2>
+    <p class="muted">The icon opens your Reseller Desk in Claude, so Chrome may show a thin bar with <b>claude.ai</b> at the top. That bar comes from Chrome, because your app lives in Claude. Everything stays private to you.</p>
+    <p class="muted">To change your link later, open <a href="#change">this page</a> in Chrome and paste the new one.</p>
+  </section>
+</main>
+<script>
+(() => {
+  const KEY = "rd-link", $ = s => document.querySelector(s);
+  const get = () => { try{ return localStorage.getItem(KEY) || ""; }catch{ return ""; } };
+  const put = v => { try{ localStorage.setItem(KEY, v); return true; }catch{ return false; } };
+  /* only your own Reseller Desk page on claude.ai is accepted, nothing else */
+  const clean = raw => { try{ const u = new URL(String(raw).trim()); if (u.protocol !== "https:" || u.hostname !== "claude.ai") return ""; const m = /^\/(code\/)?artifact\/[A-Za-z0-9_-]+/.exec(u.pathname); return m ? u.origin + m[0] : ""; }catch{ return ""; } };
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+
+  let link = clean(get());
+  if (link && standalone && !location.hash.includes("change")){ location.replace(link); return; }
+
+  const show = () => { link = clean(get()); const a = $("#open"); a.hidden = !link; if (link){ a.href = link; $("#link").value = link; } };
+  $("#save").onclick = () => {
+    const c = clean($("#link").value), m = $("#linkMsg");
+    if (!c){ m.className = "err"; m.textContent = "That doesn't look like your Reseller Desk link. It starts with https://claude.ai/artifact/"; return; }
+    if (!put(c)){ m.className = "err"; m.textContent = "This browser wouldn't save it. Try again in Chrome."; return; }
+    m.className = "ok"; m.textContent = "Saved. Now install it below."; show();
+  };
+  show();
+
+  /* Chrome offers a real install when the page qualifies */
+  let ev = null; const btn = $("#install"), note = $("#installNote"), how = $("#howto");
+  if (standalone){ note.textContent = "It's installed. Tap the Reseller Desk icon on your home screen to open it."; }
+  else {
+    note.textContent = "If the Install button doesn't show, use the steps below.";
+    how.hidden = false;
+    addEventListener("beforeinstallprompt", e => { e.preventDefault(); ev = e; btn.hidden = false; note.textContent = "This puts Reseller Desk in your app list and on your home screen."; });
+    btn.onclick = async () => { if (!ev) return; ev.prompt(); try{ await ev.userChoice; }catch{} ev = null; btn.hidden = true; };
+    addEventListener("appinstalled", () => { btn.hidden = true; note.textContent = "Installed. Look for Reseller Desk on your home screen and in your app list."; how.hidden = true; });
+  }
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js", {scope:"./"}).catch(() => {});
+})();
+</script>
+</body>
+</html>
