@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Reseller Desk by Retroviz</title>
+<title>Reseller Desk</title>
 <meta name="description" content="Reseller Desk: a free app for carboot and charity-shop resellers. Listings from photos, stock, sales, profit, expenses and miles, all in your own Google Sheet.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,6 +59,10 @@ h2{font-family:var(--display);font-weight:800;font-stretch:82%;font-size:clamp(3
 .feat .n{font-family:var(--mono);font-size:12px;color:var(--muted);display:block;margin-bottom:10px}
 ol.steps{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:14px;max-width:680px}
 ol.steps li{counter-increment:s;display:flex;gap:14px}
+ol.steps li>span{min-width:0}
+.code{display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap}
+.code code{font-family:var(--mono);font-size:15px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 12px;overflow-wrap:anywhere}
+.code button{font:inherit;font-weight:700;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:6px;padding:8px 14px;cursor:pointer}
 ol.steps li::before{content:counter(s);flex:none;width:28px;height:28px;border-radius:5px;background:var(--hl);color:var(--hl-ink);display:grid;place-items:center;font-family:var(--mono);font-weight:500}
 .note{font-size:15px;color:var(--muted);max-width:680px;margin-top:22px}
 footer{padding-block:32px 48px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
@@ -69,7 +73,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 <body>
 <header><div class="wrap">
   <a class="brand" href="#"><span class="tag" aria-hidden="true">R</span>Reseller Desk</a>
-  <span class="by">by Retroviz</span>
 </div></header>
 
 <main>
@@ -77,9 +80,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   <div>
     <div class="eyebrow">Free · for carboot &amp; charity-shop resellers</div>
     <h1>Snap it, list it, <mark>know your profit.</mark></h1>
-    <p class="lead">Reseller Desk turns your photos into a full eBay or Vinted listing, gives every item a SKU, and keeps stock, sales, expenses and miles in your own Google Sheet. Made by two resellers, for resellers.</p>
+    <p class="lead">Reseller Desk turns your photos into a full eBay or Vinted listing, gives every item a SKU, and keeps stock, sales, expenses and miles in your own Google Sheet. Made by a reseller, for resellers.</p>
     <div class="btns">
-      <a class="btn" href="https://claude.ai/artifact/RvV4D47fZz2EoAwB27ESUi" target="_blank" rel="noopener">Open the app</a>
+      <a class="btn" href="#start">Add it to Claude</a>
       <a class="btn ghost" href="https://docs.google.com/spreadsheets/d/18RVXVX2SyyFz1lcnPtnFfsP09C49bMDqZK8WXeUPIdE/copy" target="_blank" rel="noopener">Get the free tracker</a>
     </div>
   </div>
@@ -105,19 +108,35 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 </div></section>
 
 <section><div class="wrap">
-  <h2>Get started in three steps</h2>
+  <h2 id="start">Get started in five minutes</h2>
   <ol class="steps">
     <li><span>Make your own copy of the free tracker (the "Get the free tracker" button). It's yours, in your Google Drive.</span></li>
-    <li><span>Open the app in Claude and connect Google Drive and Google Sheets when it asks.</span></li>
-    <li><span>Paste your tracker link into the app. It matches your columns and you're ready to list.</span></li>
+    <li><span>In Claude, open <a href="https://claude.ai/customize/plugins" target="_blank" rel="noopener"><b>Customize › Plugins</b></a>, then <b>Add › Add marketplace</b>.</span></li>
+    <li><span>Paste this and add it:<span class="code"><code id="mk">SzymonSzmulik/reseller-desk</code><button type="button" id="cp">Copy</button></span>Turn on <b>Sync automatically</b>, so you always get the newest version without doing anything.</span></li>
+    <li><span>Find <b>Reseller Desk</b> in the list and tap <b>Add</b>. Connect <b>Google Drive</b> and <b>Google Sheets</b> if you haven't already.</span></li>
+    <li><span>Start a new chat and say <b>"open reseller desk"</b>. Claude makes the app for you. Paste your tracker link into it and you're set up.</span></li>
   </ol>
-  <p class="note">Reseller Desk runs inside Claude (claude.ai), so you'll need a Claude account. Your data stays in your own Google Sheet; nobody else can see it.</p>
+  <h2 style="margin-top:44px">Then just talk to Claude</h2>
+  <div class="feat">
+    <div><b>Send photos</b><p>"£5, bought Sunday, working" and you get the full listing, a SKU, and a row in your tracker.</p></div>
+    <div><b>Send a sold screenshot</b><p>The item's marked Sold and Claude offers a thank-you card or message.</p></div>
+    <div><b>Mention a cost or a trip</b><p>"Tape £3.50" or "drove 12 miles to the carboot" goes straight into your expenses.</p></div>
+  </div>
+  <p class="note">Reseller Desk runs inside Claude and needs a paid Claude plan (plugins are on Pro and up). The app becomes your own private copy, and your data stays in your own Google Sheet. Nobody else can see it.</p>
 </div></section>
 </main>
 
 <footer><div class="wrap">
-  <span>Reseller Desk · made by Retroviz</span>
+  <span>Reseller Desk</span>
   <span>Not affiliated with eBay or Vinted.</span>
 </div></footer>
+<script>
+document.getElementById("cp").onclick = async e => {
+  const t = document.getElementById("mk").textContent, b = e.currentTarget;
+  try{ await navigator.clipboard.writeText(t); b.textContent = "Copied"; }
+  catch{ const r = document.createRange(); r.selectNodeContents(document.getElementById("mk")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent = "Press copy"; }
+  setTimeout(() => b.textContent = "Copy", 1500);
+};
+</script>
 </body>
 </html>
