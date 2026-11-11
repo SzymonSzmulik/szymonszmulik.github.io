@@ -39,8 +39,14 @@
   <h1>Reseller Desk on your phone</h1>
   <p class="muted">Install this once and Reseller Desk gets its own icon on your home screen and in your app list. Tapping it opens your own Reseller Desk in Claude.</p>
 
+  <section class="card" id="pluginCard">
+    <h2>1. Get the plugin first</h2>
+    <p class="muted">This installer only opens your own Reseller Desk, and that comes from the plugin. In Claude, open Customize › Plugins, then Add › Add marketplace. Paste <b>SzymonSzmulik/reseller-desk</b>, turn on Sync automatically, then tap Add on Reseller Desk. Then start a new chat and say "open reseller desk and pin it".</p>
+    <a class="btn" href="https://claude.ai/customize/plugins" target="_blank" rel="noopener">Open Plugins</a>
+  </section>
+
   <section class="card" id="linkCard">
-    <h2>1. Your Reseller Desk link</h2>
+    <h2>2. Your Reseller Desk link</h2>
     <p class="muted">In Claude, open your Reseller Desk, tap <b>Share</b>, then <b>Copy link</b>. Paste it here. It's saved only on this phone.</p>
     <label>Your link<input id="link" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://claude.ai/artifact/…"></label>
     <button class="btn" id="save" type="button">Save my link</button>
@@ -49,7 +55,7 @@
   </section>
 
   <section class="card" id="installCard">
-    <h2>2. Install it</h2>
+    <h2>3. Install it</h2>
     <button class="btn" id="install" type="button" hidden>Install Reseller Desk</button>
     <p id="installNote" class="muted"></p>
     <ol id="howto" hidden>
